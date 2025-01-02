@@ -1,18 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../styles.css";
 import MovieCard from "./MovieCard";
 
-export default function MoviesGrid() {
-  const [movies, setMovies] = useState([]);
+export default function MoviesGrid({ movies, watchlist, toggleWatchList }) {
   const [searchString, setSearchString] = useState("");
   const [genre, setGenre] = useState("All genres");
   const [rating, setRating] = useState("All rating");
-
-  useEffect(() => {
-    fetch("movies.json")
-      .then((res) => res.json())
-      .then((data) => setMovies(data));
-  }, []);
 
   const handleSearch = (e) => {
     setSearchString(e.target.value);
@@ -33,7 +26,7 @@ export default function MoviesGrid() {
 
   const matchRating = (movie, rating) => {
     switch (rating) {
-      case "All":
+      case "All rating":
         return true;
       case "Good genres":
         return movie.rating >= 8;
@@ -78,6 +71,8 @@ export default function MoviesGrid() {
             <option>Action</option>
             <option>Drama</option>
             <option>Fantasy</option>
+            <option>Horror</option>
+            <option>Fantasy</option>
           </select>
         </div>
         <div className="filter-slot">
@@ -87,17 +82,21 @@ export default function MoviesGrid() {
             value={rating}
             onChange={handleRatingSelected}
           >
-            <option>All</option>
+            <option>All rating</option>
             <option>Good genres</option>
             <option>Ok</option>
             <option>Bad</option>
           </select>
         </div>
       </div>
-
       <div className="movies-grid">
         {filteredMovies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
+          <MovieCard
+            key={movie.id}
+            movie={movie}
+            toggleWatchList={toggleWatchList}
+            isWatchlist={watchlist.includes(movie.id)}
+          />
         ))}
       </div>
     </div>
